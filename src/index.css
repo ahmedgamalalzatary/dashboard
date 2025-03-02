@@ -1,0 +1,655 @@
+/* This file uses Tailwind CSS @apply directives */
+/* stylelint-disable */
+
+@import "tailwindcss";
+
+/* Font Family Settings - Enhanced */
+:root {
+  --font-heading: 'Slabo 27px', serif;
+  --font-body: 'Noto Serif', serif;
+}
+
+/* Apply fonts to all elements */
+* {
+  font-family: var(--font-body);
+}
+
+/* Text alignment based on direction */
+[dir="ltr"] * {
+  text-align: left;
+}
+
+[dir="rtl"] * {
+  text-align: right;
+}
+
+/* Override for specific elements that should maintain their alignment regardless of direction */
+.text-center,
+.items-center,
+.justify-center,
+.text-center * {
+  text-align: center !important;
+}
+
+/* Keep right alignment for specific items */
+.text-right,
+.justify-end,
+.items-end {
+  text-align: right;
+}
+
+h1, h2, h3, h4, h5, h6,
+.text-heading {
+  font-family: var(--font-heading);
+  letter-spacing: -0.015em;
+}
+
+/* Font sizes with proper font families */
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  font-family: var(--font-heading);
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: var(--font-heading);
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  font-family: var(--font-heading);
+}
+
+/* Font utility classes */
+.font-heading {
+  font-family: var(--font-heading) !important;
+}
+
+.font-body {
+  font-family: var(--font-body) !important;
+}
+
+/* Apply font body to inputs */
+input, textarea, select, button {
+  font-family: var(--font-body);
+}
+
+/* Style links with body font */
+a {
+  font-family: var(--font-body);
+}
+
+/* RTL Font Support */
+[dir="rtl"] * {
+  font-family: var(--font-body);
+}
+
+[dir="rtl"] h1, 
+[dir="rtl"] h2, 
+[dir="rtl"] h3, 
+[dir="rtl"] h4, 
+[dir="rtl"] h5, 
+[dir="rtl"] h6,
+[dir="rtl"] .text-heading {
+  font-family: var(--font-heading);
+}
+
+/* Additional RTL text alignment control */
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="ltr"] .text-right {
+  text-align: left;
+}
+
+/* Table cell alignments */
+[dir="ltr"] th,
+[dir="ltr"] td {
+  text-align: left;
+}
+
+[dir="rtl"] th,
+[dir="rtl"] td {
+  text-align: right;
+}
+
+/* Ensure input fields have proper alignment */
+[dir="ltr"] input,
+[dir="ltr"] textarea,
+[dir="ltr"] select {
+  text-align: left;
+}
+
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+  text-align: right;
+}
+
+/* Cursor Styles */
+a, button, select, input[type="submit"], input[type="button"] {
+    cursor: pointer;
+}
+
+input[type="text"], input[type="email"], input[type="password"], textarea {
+    cursor: text;
+}
+
+.resize-cursor {
+    cursor: ew-resize;
+}
+
+.grab-cursor {
+    cursor: grab;
+}
+
+.grabbing-cursor {
+    cursor: grabbing;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Hide scrollbar for Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+}
+
+/* Optional: Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
+}
+
+.animate-fadeIn {
+  animation-name: fadeIn;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+
+.animate-fadeOut {
+  animation-name: fadeOut;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+
+/* Add these new animations */
+
+/* Subtle pulse animation for active menu items */
+@keyframes pulse-subtle {
+  0% { opacity: 0.9; }
+  50% { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+/* One-time pulse animation */
+@keyframes pulse-once {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.animate-pulse-once {
+  animation: pulse-once 1s ease-out;
+}
+
+/* Slide in animation for elements */
+@keyframes slide-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.5s forwards;
+}
+
+/* RTL Support - replace @apply rules with standard CSS */
+.direction-rtl {
+    font-family: system-ui;
+}
+
+.direction-rtl .sidebar {
+    right: 0;
+}
+
+.direction-rtl .main-content {
+    margin-right: 16rem; /* 64px */
+    margin-left: 0;
+}
+
+/* Additional RTL classes */
+.direction-rtl .search-icon {
+    right: 0.75rem; /* 3px */
+    left: auto;
+}
+
+.direction-rtl .notification-badge {
+    right: -0.25rem; /* -1px */
+    left: auto;
+}
+
+.direction-rtl .mr-3 {
+    margin-left: 0.75rem; /* 3px */
+    margin-right: 0;
+}
+
+.direction-rtl .space-x-6 > * + * {
+    margin-right: 1.5rem; /* 6px */
+    margin-left: 0;
+}
+
+.direction-rtl .pl-4 {
+    padding-right: 1rem; /* 4px */
+    padding-left: 0;
+}
+
+.direction-rtl .pl-6 {
+    padding-right: 1.5rem; /* 6px */
+    padding-left: 0;
+}
+
+.direction-rtl .border-l {
+    border-right: 1px solid;
+    border-left: 0;
+}
+
+/* LTR Support */
+.direction-ltr {
+    font-family: sans-serif;
+}
+
+.direction-ltr .sidebar {
+    left: 0;
+}
+
+.direction-ltr .main-content {
+    margin-left: 16rem; /* 64px */
+    margin-right: 0;
+}
+
+/* RTL support adjustments */
+[dir="rtl"] .ml-1 {
+  margin-left: 0;
+  margin-right: 0.25rem;
+}
+
+[dir="rtl"] .mr-2,
+[dir="rtl"] .mr-3 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .pl-4,
+[dir="rtl"] .pl-6 {
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+[dir="rtl"] .border-l {
+  border-left: none;
+  border-right: 1px solid;
+}
+
+[dir="rtl"] .space-x-2 > * + *,
+[dir="rtl"] .space-x-3 > * + * {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .left-3 {
+  left: auto;
+  right: 0.75rem;
+}
+
+[dir="rtl"] .right-0 {
+  right: auto;
+  left: 0;
+}
+
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* Add these animation classes to your existing CSS */
+
+.sidebar-transition {
+  transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.content-transition {
+  transition: margin-left 0.3s ease-in-out, margin-right 0.3s ease-in-out;
+}
+
+/* RTL support for sidebar collapse */
+[dir="rtl"] .sidebar-collapsed {
+  margin-right: 5rem;
+  margin-left: 0;
+}
+
+[dir="rtl"] .md\:ml-20 {
+  margin-right: 5rem;
+  margin-left: 0;
+}
+
+[dir="rtl"] .md\:translate-x-0 {
+  transform: translateX(0);
+}
+
+[dir="rtl"] .-translate-x-full {
+  transform: translateX(100%);
+}
+
+/* Make sure the chevron icons are flipped in RTL mode */
+[dir="rtl"] .sidebar-toggle-icon {
+  transform: rotate(180deg);
+}
+
+/* Add these RTL-specific classes for search input and collapse button */
+
+/* Fix for spacing issues */
+.w-full {
+  width: 100%;
+}
+
+/* Fix for RTL search input */
+[dir="rtl"] .text-right {
+  text-align: right;
+}
+
+/* Fix for RTL sidebar toggle icon rotation */
+[dir="rtl"] .sidebar-toggle-icon svg {
+  transform: rotate(180deg);
+}
+
+/* Fix for RTL notification badge position */
+[dir="rtl"] .-right-1 {
+  right: auto;
+  left: -0.25rem;
+}
+
+[dir="rtl"] .mr-2 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .ml-1 {
+  margin-left: 0;
+  margin-right: 0.25rem;
+}
+
+[dir="rtl"] .sm\:pl-8 {
+  padding-left: 0;
+  padding-right: 2rem;
+}
+
+/* Fix for RTL space between in profile section */
+[dir="rtl"] .space-x-2 > * + * {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Fix for main content transition when sidebar collapses in RTL */
+[dir="rtl"] .md\:ml-20 {
+  margin-left: 0;
+  margin-right: 5rem;
+}
+
+/* Fix for smooth transitions */
+.sidebar-transition {
+  transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.content-transition {
+  transition: margin-left 0.3s ease-in-out, margin-right 0.3s ease-in-out;
+}
+
+/* Fix space-x in RTL mode */
+[dir="rtl"] .space-x-reverse > * + * {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+/* Transition classes */
+.transition-all {
+  transition-property: all;
+}
+
+.transition-transform {
+  transition-property: transform;
+}
+
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+}
+
+.transition-opacity {
+  transition-property: opacity;
+}
+
+.transition-shadow {
+  transition-property: box-shadow;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
+}
+
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Add hover effects to common elements */
+.hover\:shadow-sm:hover {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.hover\:shadow-md:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.hover\:scale-110:hover {
+  transform: scale(1.1);
+}
+
+.hover\:rotate-90:hover {
+  transform: rotate(90deg);
+}
+
+.hover\:rotate-180:hover {
+  transform: rotate(180deg);
+}
+
+/* Active state animations */
+.active\:scale-95:active {
+  transform: scale(0.95);
+}
+
+/* Fix for spacing in RTL with flexbox */
+[dir="rtl"] .sm\:space-x-reverse > * + * {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Update the RTL support for the width/margin changes */
+[dir="rtl"] .md\:ml-16 {
+  margin-left: 0;
+  margin-right: 4rem;
+}
+
+/* Update space-x in RTL mode with the new spacing values */
+[dir="rtl"] .space-x-4 > * + * {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+/* Fix profile section spacing in RTL */
+[dir="rtl"] .ml-4 {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+[dir="rtl"] .pl-4 {
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+/* Update RTL styles for the new sidebar width */
+
+[dir="rtl"] .md\:ml-14 {
+  margin-left: 0;
+  margin-right: 3.5rem;
+}
+
+/* Ensure the RTL sidebar collapses correctly */
+[dir="rtl"] .md\:w-14 {
+  width: 3.5rem;
+}
+
+/* Ensure the RTL sidebar width matches LTR */
+[dir="rtl"] .md\:w-60 {
+  width: 15rem;
+}
+
+/* Add or update these RTL-specific rules */
+
+/* Update the RTL support in the CSS */
+/* Sidebar positioning for RTL */
+[dir="rtl"] .fixed.inset-y-0.left-0 {
+  left: auto;
+  right: 0;
+}
+
+/* Fix margins for RTL sidebar collapse */
+[dir="rtl"] .md\:ml-14 {
+  margin-left: 0;
+  margin-right: 3.5rem;
+}
+
+[dir="rtl"] .md\:ml-60 {
+  margin-left: 0;
+  margin-right: 15rem;
+}
+
+/* Fix flex direction for RTL sidebar items */
+[dir="rtl"] .flex-row {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .ml-3,
+[dir="rtl"] .ml-4,
+[dir="rtl"] .ml-2 {
+  margin-left: 0;
+}
+
+[dir="rtl"] .mr-3,
+[dir="rtl"] .mr-4,
+[dir="rtl"] .mr-2 {
+  margin-right: 0;
+  margin-left: 0.75rem;
+}
+
+/* RTL direction for sidebar icons */
+[dir="rtl"] .flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+/* Update hover translation for RTL */
+[dir="rtl"] .hover\:translate-x-1:hover {
+  --tw-translate-x: -0.25rem;
+  transform: translate(var(--tw-translate-x), 0);
+}
+
+/* Add these important rules for RTL sidebar positioning */
+
+/* Strong override for RTL sidebar positioning - use !important to ensure it takes precedence */
+[dir="rtl"] .fixed.inset-y-0.left-0,
+[dir="rtl"] .fixed.inset-y-0.z-20 {
+  left: auto !important;
+  right: 0 !important;
+}
+
+[dir="rtl"] .fixed.inset-y-0.right-0,
+[dir="rtl"] .fixed.inset-y-0.z-20.right-0 {
+  right: 0 !important;
+  left: auto !important;
+}
+
+/* Ensure RTL margins are applied properly */
+[dir="rtl"] .md\:ml-14 {
+  margin-left: 0 !important;
+  margin-right: 3.5rem !important;
+}
+
+[dir="rtl"] .md\:ml-60 {
+  margin-left: 0 !important;
+  margin-right: 15rem !important;
+}
+
+[dir="rtl"] .md\:mr-14 {
+  margin-right: 3.5rem !important;
+  margin-left: 0 !important;
+}
+
+[dir="rtl"] .md\:mr-60 {
+  margin-right: 15rem !important;
+  margin-left: 0 !important;
+}
