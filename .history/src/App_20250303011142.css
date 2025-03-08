@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+/* Base Font Settings */
+:root {
+  --font-heading: 'Slabo 27px', serif;
+  --font-body: 'Noto Serif', serif;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Font Size Adjustments */
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+/* Additional custom styles */
+.card-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+.card-body {
+  font-family: var(--font-body);
+}
+
+.sidebar-item {
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+.chart-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.stat-label {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+}
+
+/* Button text */
+button {
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+/* Form elements */
+input, select, textarea {
+  font-family: var(--font-body);
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 1024px) {
+  .content-wrapper {
+    padding: 20px;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    transition: left 0.3s ease;
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hamburger-menu {
+    display: block;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .overlay.active {
+    display: block;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+}

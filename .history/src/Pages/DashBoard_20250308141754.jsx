@@ -204,7 +204,17 @@ function DashBoard({ setActivePage }) {
         console.log('Dashboard mounted, setActivePage function available:', !!setActivePage);
         return () => console.log('Dashboard unmounting');
     }, [setActivePage]);
-    
+
+    // Fix Support handlers
+    const handleSupportAction = useCallback((type) => {
+        showTemporaryNotification(`Opening ${type} support interface`);
+        
+        // Debug log to verify the function call
+        console.log('Navigating to support page');
+        
+        // Direct navigation to support page
+        setActivePage('support');
+    }, [setActivePage, showTemporaryNotification]);
 
     // Fix View All transactions
     const viewAllTransactions = useCallback(() => {
@@ -406,51 +416,20 @@ function DashBoard({ setActivePage }) {
                                     key={action.label}
                                     variant="secondary"
                                     onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
+                                        console.log("Button clicked:", action);
                                         if (action.action === 'navigation') {
-                                            // First show notification
+                                            // Direct navigation call for debugging
                                             showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
+                                            setActivePage(action.page);
+                                        } else {
+                                            handleQuickAction(
+                                                action.action,
+                                                action.page,
+                                                action.notificationMessage
+                                            );
                                         }
                                     }}
                                     className="flex items-center justify-center gap-2"
-                                    icon={<action.icon className="text-gray-500" />}
-                                    title={action.description}
-                                >
-                                    {action.label}
-                                </Button>
-                            ))}
-                        </div>
-                    </Card>
-
-                    {/* Sales Distribution */}
-                    <Card hover>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('SalesDistribution')}</h3>
-                        <div className="space-y-4">
-                            {saleDistribution.map((item) => (
-                                <div key={item.name}>
-                                    <div className="flex justify-between mb-1">
-                                        <span className="text-sm font-medium text-gray-700">{item.name}</span>
-                                        <span className="text-sm text-gray-500">{item.value}%</span>
-                                    </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-2">
-                                        <div
-                                            className={`h-2 rounded-full ${item.name === t('SalesChannels.Online') ? 'bg-blue-600' :
-                                                    item.name === t('SalesChannels.InStore') ? 'bg-green-500' : 'bg-yellow-500'
-                                                }`}
-                                            style={{ width: `${item.value}%` }}
-                                        ></div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
                     </Card>
                 </div>
             </div>
@@ -607,11 +586,7 @@ function DashBoard({ setActivePage }) {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <Button
                             variant="light"
-                            onClick={() => {
-                                showTemporaryNotification('Opening chat support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => handleSupportAction('chat')}
                             className="whitespace-nowrap text-blue-600 hover:bg-gray-100"
                             icon={<MdChat />}
                             title="Open chat support interface"
@@ -620,11 +595,7 @@ function DashBoard({ setActivePage }) {
                         </Button>
                         <Button
                             variant="ghost"
-                            onClick={() => {
-                                showTemporaryNotification('Opening call support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => handleSupportAction('call')}
                             className="whitespace-nowrap border-white bg-transparent hover:bg-blue-700 text-white"
                             icon={<MdPhone />}
                         >

@@ -401,32 +401,59 @@ function DashBoard({ setActivePage }) {
                     <Card hover>
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('QuickActions')}</h3>
                         <div className="grid grid-cols-2 gap-3">
-                            {quickActions.map(action => (
-                                <Button
-                                    key={action.label}
-                                    variant="secondary"
-                                    onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
-                                        if (action.action === 'navigation') {
-                                            // First show notification
-                                            showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
-                                        }
-                                    }}
-                                    className="flex items-center justify-center gap-2"
-                                    icon={<action.icon className="text-gray-500" />}
-                                    title={action.description}
-                                >
-                                    {action.label}
-                                </Button>
-                            ))}
+                            {/* Replace the mapped buttons with direct individual buttons for each action */}
+                            <Button
+                                variant="secondary"
+                                onClick={() => {
+                                    console.log("Navigating to sales page");
+                                    showTemporaryNotification("Navigating to sales page");
+                                    // Direct call without timeout
+                                    setActivePage('sales');
+                                }}
+                                className="flex items-center justify-center gap-2"
+                                icon={<MdAttachMoney className="text-gray-500" />}
+                            >
+                                {t('Crm.AddSale')}
+                            </Button>
+                            
+                            <Button
+                                variant="secondary"
+                                onClick={() => {
+                                    console.log("Navigating to products page");
+                                    showTemporaryNotification("Navigating to products page");
+                                    // Direct call without timeout
+                                    setActivePage('products');
+                                }}
+                                className="flex items-center justify-center gap-2"
+                                icon={<MdShoppingCart className="text-gray-500" />}
+                            >
+                                {t('Crm.AddNewProduct')}
+                            </Button>
+                            
+                            <Button
+                                variant="secondary"
+                                onClick={() => {
+                                    console.log("Navigating to clients page");
+                                    showTemporaryNotification("Navigating to clients page");
+                                    // Direct call without timeout
+                                    setActivePage('clients');
+                                }}
+                                className="flex items-center justify-center gap-2"
+                                icon={<MdPeople className="text-gray-500" />}
+                            >
+                                {t('Crm.AddClient')}
+                            </Button>
+                            
+                            <Button
+                                variant="secondary"
+                                onClick={() => {
+                                    showTemporaryNotification(t('Reports dashboard coming soon'));
+                                }}
+                                className="flex items-center justify-center gap-2"
+                                icon={<MdTrendingUp className="text-gray-500" />}
+                            >
+                                {t('viewAll')}
+                            </Button>
                         </div>
                     </Card>
 

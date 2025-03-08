@@ -204,6 +204,8 @@ function DashBoard({ setActivePage }) {
         console.log('Dashboard mounted, setActivePage function available:', !!setActivePage);
         return () => console.log('Dashboard unmounting');
     }, [setActivePage]);
+
+    // Fix Support handlers
     
 
     // Fix View All transactions
@@ -406,18 +408,17 @@ function DashBoard({ setActivePage }) {
                                     key={action.label}
                                     variant="secondary"
                                     onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
+                                        console.log("Button clicked:", action);
                                         if (action.action === 'navigation') {
-                                            // First show notification
+                                            // Direct navigation call for debugging
                                             showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
+                                            setActivePage(action.page);
+                                        } else {
+                                            handleQuickAction(
+                                                action.action,
+                                                action.page,
+                                                action.notificationMessage
+                                            );
                                         }
                                     }}
                                     className="flex items-center justify-center gap-2"

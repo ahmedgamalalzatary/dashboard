@@ -1,0 +1,59 @@
+/* Tablet View (768px to 1024px) */
+@media screen and (max-width: 1024px) {
+  .dashboard-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .card-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chart-container {
+    flex-direction: column;
+  }
+}
+
+/* Mobile View (up to 767px) */
+@media screen and (max-width: 767px) {
+  .sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .hamburger-menu {
+    display: block;
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 1001;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+
+  .card-container {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-container {
+    flex-direction: column;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+}

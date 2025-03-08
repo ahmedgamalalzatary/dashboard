@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, AreaChart, Area, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import {
     MdTrendingUp, MdPeople, MdShoppingCart, MdAttachMoney,
@@ -87,29 +87,30 @@ function DashBoard({ setActivePage }) {
     const quickActions = useMemo(() => [
         { 
             label: t('Crm.AddSale'),
-            action: 'navigation',
-            page: 'sales',  // Navigate to sales.jsx
+            page: 'sales',
             icon: MdAttachMoney,
-            description: 'Navigate to sales page'
+            navigate: true,
+            title: 'Navigate to sales management'
         },
         { 
             label: t('Crm.AddNewProduct'),
-            action: 'navigation',
-            page: 'products',  // Navigate to products.jsx
+            page: 'products',
             icon: MdShoppingCart,
-            description: 'Navigate to products page'
+            navigate: true,
+            title: 'Navigate to products management'
         },
         { 
             label: t('Crm.AddClient'),
-            action: 'navigation',
-            page: 'clients',  // Navigate to clients.jsx
+            page: 'clients',
             icon: MdPeople,
-            description: 'Navigate to clients page'
+            navigate: true,
+            title: 'Navigate to clients management'
         },
         { 
             label: t('viewAll'),
-            action: 'notification',  // Only show notification, no navigation
             icon: MdTrendingUp,
+            navigate: false,
+            title: 'View all reports',
             notificationMessage: t('Reports dashboard coming soon')
         }
     ], [t]);
@@ -179,43 +180,26 @@ function DashBoard({ setActivePage }) {
     }, [t, showTemporaryNotification]);
 
     // Navigation handlers for quick actions
-    const handleQuickAction = useCallback((action, page, notificationMessage) => {
-        if (action === 'navigation') {
-            const pageDescriptions = {
-                'sales': 'Navigating to sales page',
-                'products': 'Navigating to products page',
-                'clients': 'Navigating to clients page'
-            };
-            
-            showTemporaryNotification(pageDescriptions[page] || `Navigating to ${page}`);
-            
-            // Debug log to verify the function call
-            console.log(`Navigating to: ${page}`);
-            
-            // Ensure we're calling setActivePage with the correct page name
-            setActivePage(page);
-        } else if (action === 'notification') {
-            showTemporaryNotification(notificationMessage || 'Action not available');
+    const handleQuickAction = useCallback((action) => {
+        if (action.navigate) {
+            showTemporaryNotification(t(`Navigating to ${action.page}`));
+            setActivePage(action.page);
+        } else {
+            showTemporaryNotification(action.notificationMessage);
         }
-    }, [setActivePage, showTemporaryNotification]);
+    }, [setActivePage, t, showTemporaryNotification]);
 
-    // Debug listener to verify setActivePage is working
-    useEffect(() => {
-        console.log('Dashboard mounted, setActivePage function available:', !!setActivePage);
-        return () => console.log('Dashboard unmounting');
-    }, [setActivePage]);
-    
+    // Support handlers
+    const handleSupportAction = useCallback((type) => {
+        showTemporaryNotification(t(`Opening ${type} support interface`));
+        setActivePage('support');
+    }, [setActivePage, t, showTemporaryNotification]);
 
-    // Fix View All transactions
+    // View all transactions
     const viewAllTransactions = useCallback(() => {
-        showTemporaryNotification('Viewing all sales transactions');
-        
-        // Debug log
-        console.log('Navigating to sales page for all transactions');
-        
-        // Direct navigation
+        showTemporaryNotification(t('Viewing all sales transactions'));
         setActivePage('sales');
-    }, [setActivePage, showTemporaryNotification]);
+    }, [setActivePage, t, showTemporaryNotification]);
 
     return (
         <div className="space-y-6 max-w-full overflow-x-hidden">
@@ -255,7 +239,7 @@ function DashBoard({ setActivePage }) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
                     {/* Sales Overview Chart */}
-                    <Card hover>
+                    <Card hover></Card>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold text-gray-800">{t('SalesOverview')}</h3>
                             <div className="flex space-x-2">
@@ -405,24 +389,10 @@ function DashBoard({ setActivePage }) {
                                 <Button
                                     key={action.label}
                                     variant="secondary"
-                                    onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
-                                        if (action.action === 'navigation') {
-                                            // First show notification
-                                            showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
-                                        }
-                                    }}
+                                    onClick={() => handleQuickAction(action)}
                                     className="flex items-center justify-center gap-2"
                                     icon={<action.icon className="text-gray-500" />}
-                                    title={action.description}
+                                    title={action.title}
                                 >
                                     {action.label}
                                 </Button>
@@ -607,11 +577,15 @@ function DashBoard({ setActivePage }) {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <Button
                             variant="light"
-                            onClick={() => {
-                                showTemporaryNotification('Opening chat support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => handleSupportAction('chat')}
+                            className="whitespace-nowrap text-blue-600 hover:bg-gray-100"
+                            icon={<MdChat />}
+                        <p>{t('Support.AvailableMessage')}</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <Button
+                            variant="light"
+                            onClick={() => handleSupportAction('chat')}
                             className="whitespace-nowrap text-blue-600 hover:bg-gray-100"
                             icon={<MdChat />}
                             title="Open chat support interface"
@@ -620,11 +594,7 @@ function DashBoard({ setActivePage }) {
                         </Button>
                         <Button
                             variant="ghost"
-                            onClick={() => {
-                                showTemporaryNotification('Opening call support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => handleSupportAction('call')}
                             className="whitespace-nowrap border-white bg-transparent hover:bg-blue-700 text-white"
                             icon={<MdPhone />}
                         >

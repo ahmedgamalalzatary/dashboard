@@ -204,7 +204,17 @@ function DashBoard({ setActivePage }) {
         console.log('Dashboard mounted, setActivePage function available:', !!setActivePage);
         return () => console.log('Dashboard unmounting');
     }, [setActivePage]);
-    
+
+    // Fix Support handlers
+    const handleSupportAction = useCallback((type) => {
+        showTemporaryNotification(`Opening ${type} support interface`);
+        
+        // Debug log to verify the function call
+        console.log('Navigating to support page');
+        
+        // Direct navigation to support page
+        setActivePage('support');
+    }, [setActivePage, showTemporaryNotification]);
 
     // Fix View All transactions
     const viewAllTransactions = useCallback(() => {
@@ -221,27 +231,6 @@ function DashBoard({ setActivePage }) {
         <div className="space-y-6 max-w-full overflow-x-hidden">
             {/* Notification using the Alerts component */}
             <Alerts 
-                message={notificationMessage}
-                show={showNotification}
-                onHide={hideNotification}
-                position="top-20"
-                duration={3000}
-            />
-
-            {/* Key Stats Overview */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {stats.map((stat, index) => {
-                    const Icon = stat.icon;
-                    return (
-                        <Card
-                            key={index}
-                            hover
-                            className="flex-1"
-                        >
-                            <div className="flex items-center justify-between">
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-gray-500 truncate">{stat.title}</p>
-                                    <p className="text-2xl font-semibold mt-1 truncate">{stat.value}</p>
                                 </div>
                                 <div className={`p-3 rounded-full flex-shrink-0 ${stat.color}`}>
                                     <Icon className="text-2xl" />
@@ -405,21 +394,11 @@ function DashBoard({ setActivePage }) {
                                 <Button
                                     key={action.label}
                                     variant="secondary"
-                                    onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
-                                        if (action.action === 'navigation') {
-                                            // First show notification
-                                            showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
-                                        }
-                                    }}
+                                    onClick={() => handleQuickAction(
+                                        action.action,
+                                        action.page,
+                                        action.notificationMessage
+                                    )}
                                     className="flex items-center justify-center gap-2"
                                     icon={<action.icon className="text-gray-500" />}
                                     title={action.description}
@@ -607,11 +586,7 @@ function DashBoard({ setActivePage }) {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <Button
                             variant="light"
-                            onClick={() => {
-                                showTemporaryNotification('Opening chat support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => handleSupportAction('chat')}
                             className="whitespace-nowrap text-blue-600 hover:bg-gray-100"
                             icon={<MdChat />}
                             title="Open chat support interface"
@@ -620,11 +595,7 @@ function DashBoard({ setActivePage }) {
                         </Button>
                         <Button
                             variant="ghost"
-                            onClick={() => {
-                                showTemporaryNotification('Opening call support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => handleSupportAction('call')}
                             className="whitespace-nowrap border-white bg-transparent hover:bg-blue-700 text-white"
                             icon={<MdPhone />}
                         >

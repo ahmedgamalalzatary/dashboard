@@ -17,7 +17,11 @@ const MainContent = ({ activePage }) => {
   const renderContent = () => {
     switch (activePage) {
       case 'dashboard':
-        return <DashBoard />;
+        return (
+          <div className="dashboard-grid">
+            <DashBoard />
+          </div>
+        );
       case 'sales':
         return <Sales />;
       case 'products':
@@ -29,7 +33,11 @@ const MainContent = ({ activePage }) => {
       case 'reservation':
         return <Reservation />;
       case 'clients':
-        return <Clients />;
+        return (
+          <div className="table-responsive">
+            <Clients />
+          </div>
+        );
       case 'employees':
         return <Employees />;
       case 'events':
@@ -48,8 +56,8 @@ const MainContent = ({ activePage }) => {
   };
 
   return (
-    <main className="p-4 md:p-6 lg:p-8 overflow-auto min-h-[calc(100vh-3.5rem)]">
-      <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100">
+    <main className="p-6 lg:p-8 overflow-auto min-h-[calc(100vh-3.5rem)]">
+      <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
         {renderContent()}
       </div>
     </main>

@@ -87,32 +87,36 @@ function DashBoard({ setActivePage }) {
     const quickActions = useMemo(() => [
         { 
             label: t('Crm.AddSale'),
-            action: 'navigation',
-            page: 'sales',  // Navigate to sales.jsx
+            page: 'sales',  // Direct page name to navigate to
             icon: MdAttachMoney,
             description: 'Navigate to sales page'
         },
         { 
             label: t('Crm.AddNewProduct'),
-            action: 'navigation',
-            page: 'products',  // Navigate to products.jsx
+            page: 'products',  // Direct page name to navigate to
             icon: MdShoppingCart,
             description: 'Navigate to products page'
         },
         { 
             label: t('Crm.AddClient'),
-            action: 'navigation',
-            page: 'clients',  // Navigate to clients.jsx
+            page: 'clients',  // Direct page name to navigate to
             icon: MdPeople,
             description: 'Navigate to clients page'
         },
         { 
             label: t('viewAll'),
-            action: 'notification',  // Only show notification, no navigation
+            isNotification: true,  // Special flag for notification-only buttons
             icon: MdTrendingUp,
-            notificationMessage: t('Reports dashboard coming soon')
+            notificationText: 'Reports dashboard coming soon'
         }
     ], [t]);
+
+    // Simplified direct navigation handler for Quick Actions
+    const navigateToPage = useCallback((pageName) => {
+        console.log(`DashBoard: Navigating to page "${pageName}"`);
+        showTemporaryNotification(`Navigating to ${pageName} page`);
+        setActivePage(pageName);
+    }, [setActivePage, showTemporaryNotification]);
 
     const upcomingTasks = [
         { task: t('Tasks.ReviewSales'), due: t('Tasks.Today'), priority: 'high' },
@@ -178,16 +182,16 @@ function DashBoard({ setActivePage }) {
         });
     }, [t, showTemporaryNotification]);
 
-    // Navigation handlers for quick actions
-    const handleQuickAction = useCallback((action, page, notificationMessage) => {
-        if (action === 'navigation') {
-            const pageDescriptions = {
-                'sales': 'Navigating to sales page',
-                'products': 'Navigating to products page',
-                'clients': 'Navigating to clients page'
-            };
-            
-            showTemporaryNotification(pageDescriptions[page] || `Navigating to ${page}`);
+    // Debug listener to verify setActivePage is working
+    useEffect(() => {
+        console.log('Dashboard mounted, setActivePage function available:', !!setActivePage);
+        return () => console.log('Dashboard unmounting');
+    }, [setActivePage]);
+
+    // View all transactions - keeps using this function to maintain specific behavior
+    const viewAllTransactions = useCallback(() => {
+        showTemporaryNotification('Viewing all sales transactions');
+        console.log('Navigating to sales page for all transactions');
             
             // Debug log to verify the function call
             console.log(`Navigating to: ${page}`);
@@ -204,7 +208,17 @@ function DashBoard({ setActivePage }) {
         console.log('Dashboard mounted, setActivePage function available:', !!setActivePage);
         return () => console.log('Dashboard unmounting');
     }, [setActivePage]);
-    
+
+    // Fix Support handlers
+    const handleSupportAction = useCallback((type) => {
+        showTemporaryNotification(`Opening ${type} support interface`);
+        
+        // Debug log to verify the function call
+        console.log('Navigating to support page');
+        
+        // Direct navigation to support page
+        setActivePage('support');
+    }, [setActivePage, showTemporaryNotification]);
 
     // Fix View All transactions
     const viewAllTransactions = useCallback(() => {
@@ -401,23 +415,17 @@ function DashBoard({ setActivePage }) {
                     <Card hover>
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('QuickActions')}</h3>
                         <div className="grid grid-cols-2 gap-3">
-                            {quickActions.map(action => (
+                            {quickActions.map((action) => (
                                 <Button
                                     key={action.label}
                                     variant="secondary"
                                     onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
-                                        if (action.action === 'navigation') {
-                                            // First show notification
-                                            showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
+                                        if (action.isNotification) {
+                                            // For notification-only buttons (View All)
+                                            showTemporaryNotification(action.notificationText || t('Reports dashboard coming soon'));
+                                        } else {
+                                            // For navigation buttons (Sales, Products, Clients)
+                                            navigateToPage(action.page);
                                         }
                                     }}
                                     className="flex items-center justify-center gap-2"
@@ -607,24 +615,15 @@ function DashBoard({ setActivePage }) {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <Button
                             variant="light"
-                            onClick={() => {
-                                showTemporaryNotification('Opening chat support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => navigateToPage('support')}
                             className="whitespace-nowrap text-blue-600 hover:bg-gray-100"
                             icon={<MdChat />}
-                            title="Open chat support interface"
                         >
                             {t('Support.ChatSupport')}
                         </Button>
                         <Button
                             variant="ghost"
-                            onClick={() => {
-                                showTemporaryNotification('Opening call support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => navigateToPage('support')}
                             className="whitespace-nowrap border-white bg-transparent hover:bg-blue-700 text-white"
                             icon={<MdPhone />}
                         >

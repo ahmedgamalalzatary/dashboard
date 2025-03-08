@@ -406,16 +406,10 @@ function DashBoard({ setActivePage }) {
                                     key={action.label}
                                     variant="secondary"
                                     onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
                                         if (action.action === 'navigation') {
-                                            // First show notification
+                                            // Direct navigation to the page
+                                            setActivePage(action.page);
                                             showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
                                         } else if (action.action === 'notification') {
                                             showTemporaryNotification(action.notificationMessage);
                                         }

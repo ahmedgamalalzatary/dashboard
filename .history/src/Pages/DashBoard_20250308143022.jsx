@@ -178,33 +178,11 @@ function DashBoard({ setActivePage }) {
         });
     }, [t, showTemporaryNotification]);
 
-    // Navigation handlers for quick actions
-    const handleQuickAction = useCallback((action, page, notificationMessage) => {
-        if (action === 'navigation') {
-            const pageDescriptions = {
-                'sales': 'Navigating to sales page',
-                'products': 'Navigating to products page',
-                'clients': 'Navigating to clients page'
-            };
-            
-            showTemporaryNotification(pageDescriptions[page] || `Navigating to ${page}`);
-            
-            // Debug log to verify the function call
-            console.log(`Navigating to: ${page}`);
-            
-            // Ensure we're calling setActivePage with the correct page name
-            setActivePage(page);
-        } else if (action === 'notification') {
-            showTemporaryNotification(notificationMessage || 'Action not available');
-        }
-    }, [setActivePage, showTemporaryNotification]);
-
     // Debug listener to verify setActivePage is working
     useEffect(() => {
         console.log('Dashboard mounted, setActivePage function available:', !!setActivePage);
         return () => console.log('Dashboard unmounting');
     }, [setActivePage]);
-    
 
     // Fix View All transactions
     const viewAllTransactions = useCallback(() => {
@@ -406,16 +384,10 @@ function DashBoard({ setActivePage }) {
                                     key={action.label}
                                     variant="secondary"
                                     onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
                                         if (action.action === 'navigation') {
-                                            // First show notification
+                                            // Direct navigation to the page
+                                            setActivePage(action.page);
                                             showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
                                         } else if (action.action === 'notification') {
                                             showTemporaryNotification(action.notificationMessage);
                                         }

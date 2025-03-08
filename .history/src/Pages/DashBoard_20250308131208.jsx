@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, AreaChart, Area, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import {
     MdTrendingUp, MdPeople, MdShoppingCart, MdAttachMoney,
@@ -9,66 +9,25 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import Card from '../Components/UI/Card';
 import Button from '../Components/UI/Button';
-import Alerts from '../Components/UI/Alerts';
 
 function DashBoard({ setActivePage }) {
     const { t } = useTranslation();
-    
     // State for interactive elements
     const [activeTimeframe, setActiveTimeframe] = useState('monthly');
     const [completedTasks, setCompletedTasks] = useState([]);
     const [showNotification, setShowNotification] = useState(false);
-    const [notificationMessage, setNotificationMessage] = useState('');
-    const [chartData, setChartData] = useState('sales');
-    const [showCalendarView, setShowCalendarView] = useState(false);
-    const [filterApplied, setFilterApplied] = useState(false);
+    const [chartData, setChartData] = useState('sales'); // For toggling chart data
 
-    // Move chart data into useMemo to fix ESLint warnings
-    const timeframeData = useMemo(() => {
-        const weeklyData = [
-            { name: t('Days.Mon'), sales: 1200, orders: 800, revenue: 900 },
-            { name: t('Days.Tue'), sales: 1400, orders: 900, revenue: 1100 },
-            { name: t('Days.Wed'), sales: 1000, orders: 750, revenue: 800 },
-            { name: t('Days.Thu'), sales: 1500, orders: 950, revenue: 1200 },
-            { name: t('Days.Fri'), sales: 1700, orders: 1100, revenue: 1400 },
-            { name: t('Days.Sat'), sales: 1300, orders: 850, revenue: 1000 },
-            { name: t('Days.Sun'), sales: 900, orders: 650, revenue: 700 },
-        ];
+    // Mock data for charts - could be fetched from API in real application
+    const data = [
+        { name: t('Months.Jan'), sales: 4200, orders: 2400, revenue: 2400 },
+        { name: t('Months.Feb'), sales: 3000, orders: 1398, revenue: 2210 },
+        { name: t('Months.Mar'), sales: 2000, orders: 9800, revenue: 2290 },
+        { name: t('Months.Apr'), sales: 2780, orders: 3908, revenue: 2000 },
+        { name: t('Months.May'), sales: 1890, orders: 4800, revenue: 2181 },
+        { name: t('Months.Jun'), sales: 2390, orders: 3800, revenue: 2500 },
+    ];
 
-        const monthlyData = [
-            { name: t('Months.Jan'), sales: 4200, orders: 2400, revenue: 2400 },
-            { name: t('Months.Feb'), sales: 3100, orders: 1398, revenue: 2210 },
-            { name: t('Months.Mar'), sales: 2400, orders: 9800, revenue: 2290 },
-            { name: t('Months.Apr'), sales: 2700, orders: 3908, revenue: 2000 },
-            { name: t('Months.May'), sales: 1900, orders: 4800, revenue: 2181 },
-            { name: t('Months.Jun'), sales: 2600, orders: 3800, revenue: 2500 },
-        ];
-
-        const yearlyData = [
-            { name: '2019', sales: 32000, orders: 18000, revenue: 28000 },
-            { name: '2020', sales: 28000, orders: 16000, revenue: 24000 },
-            { name: '2021', sales: 34000, orders: 19500, revenue: 31000 },
-            { name: '2022', sales: 39000, orders: 22000, revenue: 36000 },
-            { name: '2023', sales: 42000, orders: 24000, revenue: 40000 },
-        ];
-
-        return { weeklyData, monthlyData, yearlyData };
-    }, [t]);
-
-    // Get current chart data based on active timeframe
-    const currentData = useMemo(() => {
-        switch (activeTimeframe) {
-            case 'weekly':
-                return timeframeData.weeklyData;
-            case 'yearly':
-                return timeframeData.yearlyData;
-            case 'monthly':
-            default:
-                return timeframeData.monthlyData;
-        }
-    }, [activeTimeframe, timeframeData]);
-
-    // Data collections
     const stats = [
         { title: t('TotalSales'), value: '$54,239', icon: MdAttachMoney, color: 'bg-green-100 text-green-800' },
         { title: t('TotalOrders'), value: '1,253', icon: MdShoppingCart, color: 'bg-blue-100 text-blue-800' },
@@ -84,35 +43,12 @@ function DashBoard({ setActivePage }) {
         { id: 5, customer: t('Customers.TomBrown'), amount: 920, status: t('Status.Pending'), trend: 'down' },
     ];
 
-    const quickActions = useMemo(() => [
-        { 
-            label: t('Crm.AddSale'),
-            action: 'navigation',
-            page: 'sales',  // Navigate to sales.jsx
-            icon: MdAttachMoney,
-            description: 'Navigate to sales page'
-        },
-        { 
-            label: t('Crm.AddNewProduct'),
-            action: 'navigation',
-            page: 'products',  // Navigate to products.jsx
-            icon: MdShoppingCart,
-            description: 'Navigate to products page'
-        },
-        { 
-            label: t('Crm.AddClient'),
-            action: 'navigation',
-            page: 'clients',  // Navigate to clients.jsx
-            icon: MdPeople,
-            description: 'Navigate to clients page'
-        },
-        { 
-            label: t('viewAll'),
-            action: 'notification',  // Only show notification, no navigation
-            icon: MdTrendingUp,
-            notificationMessage: t('Reports dashboard coming soon')
-        }
-    ], [t]);
+    const quickActions = [
+        { label: t('Crm.AddSale'), page: 'sales', icon: MdAttachMoney },
+        { label: t('Crm.AddNewProduct'), page: 'products', icon: MdShoppingCart },
+        { label: t('Crm.AddClient'), page: 'clients', icon: MdPeople },
+        { label: t('viewAll'), page: 'reports', icon: MdTrendingUp }
+    ];
 
     const upcomingTasks = [
         { task: t('Tasks.ReviewSales'), due: t('Tasks.Today'), priority: 'high' },
@@ -133,101 +69,8 @@ function DashBoard({ setActivePage }) {
         { name: t('Goals.Sales'), value: 85, color: '#F59E0B' },
     ];
 
-    // Show temporary notification helper
-    const showTemporaryNotification = useCallback((message) => {
-        setNotificationMessage(message);
-        setShowNotification(true);
-    }, []);
-
-    // Handler for hiding notification
-    const hideNotification = useCallback(() => {
-        setShowNotification(false);
-    }, []);
-
-    // Handler functions for timeframe buttons
-    const handleTimeframeChange = useCallback((timeframe) => {
-        setActiveTimeframe(timeframe);
-        showTemporaryNotification(`${t('Timeframes.' + timeframe.charAt(0).toUpperCase() + timeframe.slice(1))} ${t('data loaded')}`);
-    }, [t, showTemporaryNotification]);
-
-    // Chart data toggle handler
-    const handleChartDataToggle = useCallback(() => {
-        const newChartType = chartData === 'sales' ? 'orders' : 'sales';
-        setChartData(newChartType);
-        showTemporaryNotification(t(`Showing ${newChartType} data`));
-    }, [chartData, t, showTemporaryNotification]);
-
-    // Task completion handler
-    const handleTaskCompletion = useCallback((taskIdx) => {
-        setCompletedTasks(prev => {
-            if (prev.includes(taskIdx)) {
-                showTemporaryNotification(t('Task marked as incomplete'));
-                return prev.filter(id => id !== taskIdx);
-            } else {
-                showTemporaryNotification(t('Task completed'));
-                return [...prev, taskIdx];
-            }
-        });
-    }, [t, showTemporaryNotification]);
-
-    // Calendar view toggle
-    const toggleCalendarView = useCallback(() => {
-        setShowCalendarView(prev => {
-            showTemporaryNotification(prev ? t('List view activated') : t('Calendar view activated'));
-            return !prev;
-        });
-    }, [t, showTemporaryNotification]);
-
-    // Navigation handlers for quick actions
-    const handleQuickAction = useCallback((action, page, notificationMessage) => {
-        if (action === 'navigation') {
-            const pageDescriptions = {
-                'sales': 'Navigating to sales page',
-                'products': 'Navigating to products page',
-                'clients': 'Navigating to clients page'
-            };
-            
-            showTemporaryNotification(pageDescriptions[page] || `Navigating to ${page}`);
-            
-            // Debug log to verify the function call
-            console.log(`Navigating to: ${page}`);
-            
-            // Ensure we're calling setActivePage with the correct page name
-            setActivePage(page);
-        } else if (action === 'notification') {
-            showTemporaryNotification(notificationMessage || 'Action not available');
-        }
-    }, [setActivePage, showTemporaryNotification]);
-
-    // Debug listener to verify setActivePage is working
-    useEffect(() => {
-        console.log('Dashboard mounted, setActivePage function available:', !!setActivePage);
-        return () => console.log('Dashboard unmounting');
-    }, [setActivePage]);
-    
-
-    // Fix View All transactions
-    const viewAllTransactions = useCallback(() => {
-        showTemporaryNotification('Viewing all sales transactions');
-        
-        // Debug log
-        console.log('Navigating to sales page for all transactions');
-        
-        // Direct navigation
-        setActivePage('sales');
-    }, [setActivePage, showTemporaryNotification]);
-
     return (
         <div className="space-y-6 max-w-full overflow-x-hidden">
-            {/* Notification using the Alerts component */}
-            <Alerts 
-                message={notificationMessage}
-                show={showNotification}
-                onHide={hideNotification}
-                position="top-20"
-                duration={3000}
-            />
-
             {/* Key Stats Overview */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, index) => {
@@ -263,7 +106,10 @@ function DashBoard({ setActivePage }) {
                                     variant={activeTimeframe === 'weekly' ? "dark" : "ghost"}
                                     size="xs"
                                     className={activeTimeframe !== 'weekly' ? "bg-gray-100 text-gray-700" : ""}
-                                    onClick={() => handleTimeframeChange('weekly')}
+                                    onClick={() => {
+                                        setActiveTimeframe('weekly');
+                                        // In a real app, this would fetch weekly data
+                                    }}
                                 >
                                     {t('Timeframes.Weekly')}
                                 </Button>
@@ -271,7 +117,10 @@ function DashBoard({ setActivePage }) {
                                     variant={activeTimeframe === 'monthly' ? "dark" : "ghost"}
                                     size="xs"
                                     className={activeTimeframe !== 'monthly' ? "bg-gray-100 text-gray-700" : ""}
-                                    onClick={() => handleTimeframeChange('monthly')}
+                                    onClick={() => {
+                                        setActiveTimeframe('monthly');
+                                        // In a real app, this would fetch monthly data
+                                    }}
                                 >
                                     {t('Timeframes.Monthly')}
                                 </Button>
@@ -279,7 +128,10 @@ function DashBoard({ setActivePage }) {
                                     variant={activeTimeframe === 'yearly' ? "dark" : "ghost"}
                                     size="xs"
                                     className={activeTimeframe !== 'yearly' ? "bg-gray-100 text-gray-700" : ""}
-                                    onClick={() => handleTimeframeChange('yearly')}
+                                    onClick={() => {
+                                        setActiveTimeframe('yearly');
+                                        // In a real app, this would fetch yearly data
+                                    }}
                                 >
                                     {t('Timeframes.Yearly')}
                                 </Button>
@@ -287,12 +139,12 @@ function DashBoard({ setActivePage }) {
                         </div>
                         <div className="h-64">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={currentData}>
+                                <BarChart data={data}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <XAxis dataKey="name" axisLine={false} tickLine={false} />
                                     <YAxis axisLine={false} tickLine={false} />
                                     <Tooltip cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }} />
-                                    <Bar dataKey={chartData} fill="#4F46E5" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="sales" fill="#4F46E5" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -302,27 +154,28 @@ function DashBoard({ setActivePage }) {
                     <Card hover>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold text-gray-800">{t('OrdersTrend')}</h3>
-                            <div className="flex items-center gap-2">
-                                {filterApplied && (
-                                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                        {t('Filtered')}
-                                    </span>
-                                )}
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="rounded-full"
-                                    icon={<MdMoreVert className="text-gray-500" />}
-                                    onClick={() => {
-                                        handleChartDataToggle();
-                                        setFilterApplied(!filterApplied);
-                                    }}
-                                />
-                            </div>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="rounded-full"
+                                icon={<MdMoreVert className="text-gray-500" />}
+                                onClick={() => {
+                                    // Toggle between different chart data
+                                    setChartData(chartData === 'sales' ? 'orders' : 'sales');
+                                    setShowNotification(true);
+                                    // Auto-hide notification after 3 seconds
+                                    setTimeout(() => setShowNotification(false), 3000);
+                                }}
+                            />
+                            {showNotification && (
+                                <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-md p-2 z-10 text-sm">
+                                    {chartData === 'sales' ? t('Showing sales data') : t('Showing orders data')}
+                                </div>
+                            )}
                         </div>
                         <div className="h-64">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={currentData}>
+                                <AreaChart data={data}>
                                     <defs>
                                         <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8} />
@@ -370,7 +223,7 @@ function DashBoard({ setActivePage }) {
                             <Button
                                 variant="secondary"
                                 size="sm"
-                                onClick={viewAllTransactions}
+                                onClick={() => setActivePage('sales')}
                             >
                                 {t('ViewAll')}
                             </Button>
@@ -405,24 +258,9 @@ function DashBoard({ setActivePage }) {
                                 <Button
                                     key={action.label}
                                     variant="secondary"
-                                    onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
-                                        if (action.action === 'navigation') {
-                                            // First show notification
-                                            showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
-                                        }
-                                    }}
+                                    onClick={() => setActivePage(action.page)}
                                     className="flex items-center justify-center gap-2"
                                     icon={<action.icon className="text-gray-500" />}
-                                    title={action.description}
                                 >
                                     {action.label}
                                 </Button>
@@ -464,50 +302,49 @@ function DashBoard({ setActivePage }) {
                             <Button
                                 variant="secondary"
                                 size="sm"
-                                onClick={toggleCalendarView}
+                                onClick={() => {
+                                    // In a real app, this would open a calendar view
+                                    alert(t('Calendar view would open here'));
+                                }}
                             >
-                                {showCalendarView ? t('ViewList') : t('ViewCalendar')}
+                                {t('ViewCalendar')}
                             </Button>
                         </div>
-                        
-                        {showCalendarView ? (
-                            <div className="bg-gray-50 p-4 rounded-lg text-center h-[300px] flex items-center justify-center">
-                                <div>
-                                    <p className="text-gray-600 mb-2">{t('Calendar.SimpleCalendarView')}</p>
-                                    <p className="text-sm text-gray-500">{t('Calendar.TaskCount', { count: upcomingTasks.length })}</p>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="space-y-2">
-                                {upcomingTasks.map((task, idx) => (
-                                    <div
-                                        key={idx}
-                                        className={`flex items-start space-x-3 p-3 rounded-lg border-l-4 ${task.priority === 'high' ? 'border-red-500 bg-red-50' :
-                                                task.priority === 'medium' ? 'border-yellow-500 bg-yellow-50' :
-                                                    'border-blue-500 bg-blue-50'
-                                            }`}
-                                    >
-                                        <div className="flex-shrink-0 pt-1">
-                                            <input
-                                                type="checkbox"
-                                                className="rounded border-gray-300"
-                                                checked={completedTasks.includes(idx)}
-                                                onChange={() => handleTaskCompletion(idx)}
-                                            />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className={`font-medium ${completedTasks.includes(idx) ? 'line-through text-gray-500' : 'text-gray-800'}`}>{task.task}</p>
-                                            <div className="flex items-center mt-1 text-xs">
-                                                <MdCalendarToday className="text-gray-500 mr-1" />
-                                                <span className="text-gray-600 mr-3">{task.due.split(',')[0]}</span>
-                                                <MdAccessTime className="text-gray-500 mr-1" />
-                                                <span className="text-gray-600">{task.due.split(',')[1] || ''}</span>
-                                            </div>
+                        <div className="space-y-2">
+                            {upcomingTasks.map((task, idx) => (
+                                <div
+                                    key={idx}
+                                    className={`flex items-start space-x-3 p-3 rounded-lg border-l-4 ${task.priority === 'high' ? 'border-red-500 bg-red-50' :
+                                            task.priority === 'medium' ? 'border-yellow-500 bg-yellow-50' :
+                                                'border-blue-500 bg-blue-50'
+                                        }`}
+                                >
+                                    <div className="flex-shrink-0 pt-1">
+                                        <input
+                                            type="checkbox"
+                                            className="rounded border-gray-300"
+                                            checked={completedTasks.includes(idx)}
+                                            onChange={() => {
+                                                if (completedTasks.includes(idx)) {
+                                                    setCompletedTasks(completedTasks.filter(taskId => taskId !== idx));
+                                                } else {
+                                                    setCompletedTasks([...completedTasks, idx]);
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="font-medium text-gray-800">{task.task}</p>
+                                        <div className="flex items-center mt-1 text-xs">
+                                            <MdCalendarToday className="text-gray-500 mr-1" />
+                                            <span className="text-gray-600 mr-3">{task.due.split(',')[0]}</span>
+                                            <MdAccessTime className="text-gray-500 mr-1" />
+                                            <span className="text-gray-600">{task.due.split(',')[1] || ''}</span>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        )}
+                                </div>
+                            ))}
+                        </div>
                     </Card>
                 </div>
 
@@ -607,24 +444,15 @@ function DashBoard({ setActivePage }) {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <Button
                             variant="light"
-                            onClick={() => {
-                                showTemporaryNotification('Opening chat support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => setActivePage('support')}
                             className="whitespace-nowrap text-blue-600 hover:bg-gray-100"
                             icon={<MdChat />}
-                            title="Open chat support interface"
                         >
                             {t('Support.ChatSupport')}
                         </Button>
                         <Button
                             variant="ghost"
-                            onClick={() => {
-                                showTemporaryNotification('Opening call support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => setActivePage('support')}
                             className="whitespace-nowrap border-white bg-transparent hover:bg-blue-700 text-white"
                             icon={<MdPhone />}
                         >

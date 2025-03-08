@@ -401,41 +401,41 @@ function DashBoard({ setActivePage }) {
                     <Card hover>
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('QuickActions')}</h3>
                         <div className="grid grid-cols-2 gap-3">
-                            {quickActions.map(action => (
-                                <Button
-                                    key={action.label}
-                                    variant="secondary"
-                                    onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
-                                        if (action.action === 'navigation') {
-                                            // First show notification
-                                            showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
-                                        }
-                                    }}
-                                    className="flex items-center justify-center gap-2"
-                                    icon={<action.icon className="text-gray-500" />}
-                                    title={action.description}
-                                >
-                                    {action.label}
-                                </Button>
-                            ))}
-                        </div>
-                    </Card>
-
-                    {/* Sales Distribution */}
-                    <Card hover>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('SalesDistribution')}</h3>
-                        <div className="space-y-4">
-                            {saleDistribution.map((item) => (
-                                <div key={item.name}>
+                            {/* Replace the mapped buttons with direct individual buttons for each action */}
+                            <Button
+                                variant="secondary"
+                                onClick={() => {
+                                    console.log("Navigating to sales page");
+                                    showTemporaryNotification("Navigating to sales page");
+                                    // Direct call without timeout
+                                    setActivePage('sales');
+                                }}
+                                className="flex items-center justify-center gap-2"
+                                icon={<MdAttachMoney className="text-gray-500" />}
+                            >
+                                {t('Crm.AddSale')}
+                            </Button>
+                            
+                            <Button
+                                variant="secondary"
+                                onClick={() => {
+                                    console.log("Navigating to products page");
+                                    showTemporaryNotification("Navigating to products page");
+                                    // Direct call without timeout
+                                    setActivePage('products');
+                                }}
+                                className="flex items-center justify-center gap-2"
+                                icon={<MdShoppingCart className="text-gray-500" />}
+                            >
+                                {t('Crm.AddNewProduct')}
+                            </Button>
+                            
+                            <Button
+                                variant="secondary"
+                                onClick={() => {
+                                    console.log("Navigating to clients page");
+                                    showTemporaryNotification("Navigating to clients page");
+                                    // Direct call without timeout
                                     <div className="flex justify-between mb-1">
                                         <span className="text-sm font-medium text-gray-700">{item.name}</span>
                                         <span className="text-sm text-gray-500">{item.value}%</span>

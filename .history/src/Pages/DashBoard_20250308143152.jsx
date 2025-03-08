@@ -418,12 +418,6 @@ function DashBoard({ setActivePage }) {
                                             }, 100);
                                         } else if (action.action === 'notification') {
                                             showTemporaryNotification(action.notificationMessage);
-                                        }
-                                    }}
-                                    className="flex items-center justify-center gap-2"
-                                    icon={<action.icon className="text-gray-500" />}
-                                    title={action.description}
-                                >
                                     {action.label}
                                 </Button>
                             ))}

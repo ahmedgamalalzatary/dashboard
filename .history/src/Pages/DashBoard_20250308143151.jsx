@@ -415,12 +415,6 @@ function DashBoard({ setActivePage }) {
                                             // Then navigate after a brief delay
                                             setTimeout(() => {
                                                 setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
-                                        }
-                                    }}
-                                    className="flex items-center justify-center gap-2"
                                     icon={<action.icon className="text-gray-500" />}
                                     title={action.description}
                                 >

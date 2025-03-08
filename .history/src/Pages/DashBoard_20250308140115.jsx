@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, AreaChart, Area, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import {
     MdTrendingUp, MdPeople, MdShoppingCart, MdAttachMoney,
@@ -15,7 +15,6 @@ function DashBoard({ setActivePage }) {
     const { t } = useTranslation();
     
     // State for interactive elements
-    const [activeTimeframe, setActiveTimeframe] = useState('monthly');
     const [completedTasks, setCompletedTasks] = useState([]);
     const [showNotification, setShowNotification] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
@@ -23,50 +22,46 @@ function DashBoard({ setActivePage }) {
     const [showCalendarView, setShowCalendarView] = useState(false);
     const [filterApplied, setFilterApplied] = useState(false);
 
-    // Move chart data into useMemo to fix ESLint warnings
-    const timeframeData = useMemo(() => {
-        const weeklyData = [
-            { name: t('Days.Mon'), sales: 1200, orders: 800, revenue: 900 },
-            { name: t('Days.Tue'), sales: 1400, orders: 900, revenue: 1100 },
-            { name: t('Days.Wed'), sales: 1000, orders: 750, revenue: 800 },
-            { name: t('Days.Thu'), sales: 1500, orders: 950, revenue: 1200 },
-            { name: t('Days.Fri'), sales: 1700, orders: 1100, revenue: 1400 },
-            { name: t('Days.Sat'), sales: 1300, orders: 850, revenue: 1000 },
-            { name: t('Days.Sun'), sales: 900, orders: 650, revenue: 700 },
-        ];
+    // Mock data for charts - could be fetched from API in real application
+    const weeklyData = [
+        { name: t('Days.Mon'), sales: 1200, orders: 800, revenue: 900 },
+        { name: t('Days.Tue'), sales: 1400, orders: 900, revenue: 1100 },
+        { name: t('Days.Wed'), sales: 1000, orders: 750, revenue: 800 },
+        { name: t('Days.Thu'), sales: 1500, orders: 950, revenue: 1200 },
+        { name: t('Days.Fri'), sales: 1700, orders: 1100, revenue: 1400 },
+        { name: t('Days.Sat'), sales: 1300, orders: 850, revenue: 1000 },
+        { name: t('Days.Sun'), sales: 900, orders: 650, revenue: 700 },
+    ];
 
-        const monthlyData = [
-            { name: t('Months.Jan'), sales: 4200, orders: 2400, revenue: 2400 },
-            { name: t('Months.Feb'), sales: 3100, orders: 1398, revenue: 2210 },
-            { name: t('Months.Mar'), sales: 2400, orders: 9800, revenue: 2290 },
-            { name: t('Months.Apr'), sales: 2700, orders: 3908, revenue: 2000 },
-            { name: t('Months.May'), sales: 1900, orders: 4800, revenue: 2181 },
-            { name: t('Months.Jun'), sales: 2600, orders: 3800, revenue: 2500 },
-        ];
+    const monthlyData = [
+        { name: t('Months.Jan'), sales: 4200, orders: 2400, revenue: 2400 },
+        { name: t('Months.Feb'), sales: 3100, orders: 1398, revenue: 2210 },
+        { name: t('Months.Mar'), sales: 2400, orders: 9800, revenue: 2290 },
+        { name: t('Months.Apr'), sales: 2700, orders: 3908, revenue: 2000 },
+        { name: t('Months.May'), sales: 1900, orders: 4800, revenue: 2181 },
+        { name: t('Months.Jun'), sales: 2600, orders: 3800, revenue: 2500 },
+    ];
 
-        const yearlyData = [
-            { name: '2019', sales: 32000, orders: 18000, revenue: 28000 },
-            { name: '2020', sales: 28000, orders: 16000, revenue: 24000 },
-            { name: '2021', sales: 34000, orders: 19500, revenue: 31000 },
-            { name: '2022', sales: 39000, orders: 22000, revenue: 36000 },
-            { name: '2023', sales: 42000, orders: 24000, revenue: 40000 },
-        ];
-
-        return { weeklyData, monthlyData, yearlyData };
-    }, [t]);
+    const yearlyData = [
+        { name: '2019', sales: 32000, orders: 18000, revenue: 28000 },
+        { name: '2020', sales: 28000, orders: 16000, revenue: 24000 },
+        { name: '2021', sales: 34000, orders: 19500, revenue: 31000 },
+        { name: '2022', sales: 39000, orders: 22000, revenue: 36000 },
+        { name: '2023', sales: 42000, orders: 24000, revenue: 40000 },
+    ];
 
     // Get current chart data based on active timeframe
     const currentData = useMemo(() => {
         switch (activeTimeframe) {
             case 'weekly':
-                return timeframeData.weeklyData;
+                return weeklyData;
             case 'yearly':
-                return timeframeData.yearlyData;
+                return yearlyData;
             case 'monthly':
             default:
-                return timeframeData.monthlyData;
+                return monthlyData;
         }
-    }, [activeTimeframe, timeframeData]);
+    }, [activeTimeframe, weeklyData, monthlyData, yearlyData]);
 
     // Data collections
     const stats = [
@@ -84,35 +79,12 @@ function DashBoard({ setActivePage }) {
         { id: 5, customer: t('Customers.TomBrown'), amount: 920, status: t('Status.Pending'), trend: 'down' },
     ];
 
-    const quickActions = useMemo(() => [
-        { 
-            label: t('Crm.AddSale'),
-            action: 'navigation',
-            page: 'sales',  // Navigate to sales.jsx
-            icon: MdAttachMoney,
-            description: 'Navigate to sales page'
-        },
-        { 
-            label: t('Crm.AddNewProduct'),
-            action: 'navigation',
-            page: 'products',  // Navigate to products.jsx
-            icon: MdShoppingCart,
-            description: 'Navigate to products page'
-        },
-        { 
-            label: t('Crm.AddClient'),
-            action: 'navigation',
-            page: 'clients',  // Navigate to clients.jsx
-            icon: MdPeople,
-            description: 'Navigate to clients page'
-        },
-        { 
-            label: t('viewAll'),
-            action: 'notification',  // Only show notification, no navigation
-            icon: MdTrendingUp,
-            notificationMessage: t('Reports dashboard coming soon')
-        }
-    ], [t]);
+    const quickActions = [
+        { label: t('Crm.AddSale'), page: 'sales', icon: MdAttachMoney },
+        { label: t('Crm.AddNewProduct'), page: 'products', icon: MdShoppingCart },
+        { label: t('Crm.AddClient'), page: 'clients', icon: MdPeople },
+        { label: t('viewAll'), action: 'notification', icon: MdTrendingUp }
+    ];
 
     const upcomingTasks = [
         { task: t('Tasks.ReviewSales'), due: t('Tasks.Today'), priority: 'high' },
@@ -137,11 +109,7 @@ function DashBoard({ setActivePage }) {
     const showTemporaryNotification = useCallback((message) => {
         setNotificationMessage(message);
         setShowNotification(true);
-    }, []);
-
-    // Handler for hiding notification
-    const hideNotification = useCallback(() => {
-        setShowNotification(false);
+        setTimeout(() => setShowNotification(false), 3000);
     }, []);
 
     // Handler functions for timeframe buttons
@@ -179,54 +147,35 @@ function DashBoard({ setActivePage }) {
     }, [t, showTemporaryNotification]);
 
     // Navigation handlers for quick actions
-    const handleQuickAction = useCallback((action, page, notificationMessage) => {
+    const handleQuickAction = useCallback((action, page) => {
         if (action === 'navigation') {
-            const pageDescriptions = {
-                'sales': 'Navigating to sales page',
-                'products': 'Navigating to products page',
-                'clients': 'Navigating to clients page'
-            };
-            
-            showTemporaryNotification(pageDescriptions[page] || `Navigating to ${page}`);
-            
-            // Debug log to verify the function call
-            console.log(`Navigating to: ${page}`);
-            
-            // Ensure we're calling setActivePage with the correct page name
+            showTemporaryNotification(t(`Navigating to ${page}`));
             setActivePage(page);
         } else if (action === 'notification') {
-            showTemporaryNotification(notificationMessage || 'Action not available');
+            showTemporaryNotification(t('Reports dashboard coming soon'));
         }
-    }, [setActivePage, showTemporaryNotification]);
+    }, [setActivePage, t, showTemporaryNotification]);
 
-    // Debug listener to verify setActivePage is working
-    useEffect(() => {
-        console.log('Dashboard mounted, setActivePage function available:', !!setActivePage);
-        return () => console.log('Dashboard unmounting');
-    }, [setActivePage]);
-    
+    // Support handlers
+    const handleSupportAction = useCallback((type) => {
+        showTemporaryNotification(t(`Initiating ${type} support`));
+        setActivePage('support');
+    }, [setActivePage, t, showTemporaryNotification]);
 
-    // Fix View All transactions
+    // View all transactions
     const viewAllTransactions = useCallback(() => {
-        showTemporaryNotification('Viewing all sales transactions');
-        
-        // Debug log
-        console.log('Navigating to sales page for all transactions');
-        
-        // Direct navigation
+        showTemporaryNotification(t('Viewing all sales transactions'));
         setActivePage('sales');
-    }, [setActivePage, showTemporaryNotification]);
+    }, [setActivePage, t, showTemporaryNotification]);
 
     return (
         <div className="space-y-6 max-w-full overflow-x-hidden">
-            {/* Notification using the Alerts component */}
-            <Alerts 
-                message={notificationMessage}
-                show={showNotification}
-                onHide={hideNotification}
-                position="top-20"
-                duration={3000}
-            />
+            {/* Notification Toast - Positioned lower */}
+            {showNotification && (
+                <div className="fixed top-20 right-4 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-down">
+                    {notificationMessage}
+                </div>
+            )}
 
             {/* Key Stats Overview */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -405,24 +354,12 @@ function DashBoard({ setActivePage }) {
                                 <Button
                                     key={action.label}
                                     variant="secondary"
-                                    onClick={() => {
-                                        console.log("Quick action clicked:", action.label, action.page);
-                                        
-                                        if (action.action === 'navigation') {
-                                            // First show notification
-                                            showTemporaryNotification(`Navigating to ${action.page}`);
-                                            
-                                            // Then navigate after a brief delay
-                                            setTimeout(() => {
-                                                setActivePage(action.page);
-                                            }, 100);
-                                        } else if (action.action === 'notification') {
-                                            showTemporaryNotification(action.notificationMessage);
-                                        }
-                                    }}
+                                    onClick={() => handleQuickAction(
+                                        action.action || 'navigation', 
+                                        action.page
+                                    )}
                                     className="flex items-center justify-center gap-2"
                                     icon={<action.icon className="text-gray-500" />}
-                                    title={action.description}
                                 >
                                     {action.label}
                                 </Button>
@@ -607,24 +544,15 @@ function DashBoard({ setActivePage }) {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <Button
                             variant="light"
-                            onClick={() => {
-                                showTemporaryNotification('Opening chat support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => handleSupportAction('chat')}
                             className="whitespace-nowrap text-blue-600 hover:bg-gray-100"
                             icon={<MdChat />}
-                            title="Open chat support interface"
                         >
                             {t('Support.ChatSupport')}
                         </Button>
                         <Button
                             variant="ghost"
-                            onClick={() => {
-                                showTemporaryNotification('Opening call support');
-                                console.log('Direct navigation to support page');
-                                setActivePage('support');
-                            }}
+                            onClick={() => handleSupportAction('call')}
                             className="whitespace-nowrap border-white bg-transparent hover:bg-blue-700 text-white"
                             icon={<MdPhone />}
                         >
